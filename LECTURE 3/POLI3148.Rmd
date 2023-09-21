@@ -1,0 +1,20 @@
+---
+title: "POLI3148"
+output:
+  pdf_document: default
+  html_document: default
+date: "2023-09-21"
+---
+
+## R Markdown
+
+#### Demo
+
+```{r}
+1+1
+```
+
+```{r}
+#install.packages("tinytex")
+#tinytex::install_tinytex()
+```
