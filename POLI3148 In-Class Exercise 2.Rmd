@@ -1,0 +1,114 @@
+---
+title: "POLI3148 In-Class Exercise 2"
+author: "Bernadette Marie Coronel La'O 3035957329"
+date: "2023-10-05"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+d <- read_csv("/Users/berni/Desktop/POLI3148 PORTFOLIO/_DataPublic_/vdem/1984_2022/vdem_1984_2022_external.csv", show_col_types = FALSE)
+```
+
+Link:
+
+### 1. Codebook lookup. Look up the codebook, answer the following questions:
+
+1.  What indicators regarding the quality of education are available in the V-Dem datasets?
+
+    ```{r}
+    d |> select(e_peaveduc, e_peedgini)
+    ```
+
+    2.  What are the data's coverage (i.e., for which countries and years do we have data?)
+
+    ```{r}
+    d |> select(country_name, year) |> distinct()
+    ```
+
+    3.  What are their sources? Provide the link to at least 1 source.
+
+    ```{r}
+    # Clio Infra (clio-infra.eu), drawing on Mitchell (1998a, 1998b, 1998c), United States Census Bureau (2021), UNESCO, Földvári and van Leeuwen (2014), Leeuwen, van Leeuwen- Li, Földvári (2011), Leeuwen, van Leeuwen-Li, Földvári (2012a), Leeuwen, van Leeuwen-Li, Földvári (2012b), Didenko, Foldvari, van Leeuwen (2012)
+    ```
+
+    ### **2. Subset by columns**
+
+    1.  Create a dataset containing only the country-year identifiers and indicators of education quality.
+
+    ```{r}
+    d_eq <- d |>
+      select(country_name, year, e_peaveduc, e_peedgini)
+    d_eq
+    ```
+
+    2.  Rename the columns of education quality to make them informative.
+
+    ```{r}
+    d_eqr <- d_eq |>
+      rename("Country" = "country_name", "Year" = "year", "Education" = "e_peaveduc", "Inequality" = "e_peedgini")
+    d_eqr
+    ```
+
+    ### **3. Subset by rows**
+
+    1.  List 5 countries-years that have the highest education level among its population.
+
+    ```{r}
+    d_eqr |>
+      slice_max(order_by = Education, n = 5)
+    ```
+
+    2.  List 5 countries-years that suffer from the most severe inequality in education.
+
+    ```{r}
+    d_eqr |>
+      slice_max(order_by = Inequality, n = 5)
+    ```
+
+    ### **4. Summarize the data**
+
+    1.  Check data availability: For which countries and years are the indicators of education quality available?
+
+    ```{r}
+    d_eqr |>
+      group_by(Country) |>
+      mutate(eq_missing = as.numeric(is.na(Education))) |>
+      arrange(-eq_missing)
+    ```
+
+    2.  Create average level of education quality from 1984 to 2022
+
+    ```{r}
+    d_eqr |>
+      group_by(Country) |>
+      summarise(eq_average = mean(Education, na.rm = TRUE)) |>
+      arrange(-eq_average)
+    ```
+
+    3.  Create change of education quality from 1984 to 2022
+
+    ```{r}
+    d_eqr |>
+      group_by(Country) |>
+      arrange(Year) |>
+      mutate(eq_yoy_change = Education - lag(Education, n=1)) |>
+      ungroup() |>
+      arrange(Country, Year) |>
+      arrange(-eq_yoy_change)
+    ```
+
+    4.  Examine the data and *briefly* discuss: Which countries perform the best and the worst in terms of education quality in the past four decades?
+
+    ```{r}
+    # Germany, Australia, and the UK have the highest education averages throughout 1984-2022.
+    # Botswana, Singapore, and Thailand have had the most improvements.
+
+    # Burkina Faso, Niger, and Mali have the lowest education averages throughout 1984-2022.
+    # Namibia, Russia, and Sweden have had the least improvements.
+    ```
