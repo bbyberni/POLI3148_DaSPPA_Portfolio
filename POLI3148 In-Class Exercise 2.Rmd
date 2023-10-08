@@ -15,7 +15,7 @@ library(tidyverse)
 d <- read_csv("/Users/berni/Desktop/POLI3148 PORTFOLIO/_DataPublic_/vdem/1984_2022/vdem_1984_2022_external.csv", show_col_types = FALSE)
 ```
 
-Link:
+Link: https://github.com/bbyberni/POLI3148_DaSPPA_Portfolio/blob/main/POLI3148%20In-Class%20Exercise%202.Rmd
 
 ### 1. Codebook lookup. Look up the codebook, answer the following questions:
 
